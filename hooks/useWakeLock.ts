@@ -1,60 +1,62 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback } from 'react';
 
-export function useWakeLock() {
-  const [isScreenActiveEnabled, setIsScreenActiveEnabled] = useState(false)
-  const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null)
-  const [error, setError] = useState<string | null>(null)
+export function useWakeLock(): {
+  isScreenActiveEnabled: boolean;
+  error: string | null;
+} {
+  const [isScreenActiveEnabled, setIsScreenActiveEnabled] = useState(false);
+  const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const enableKeepScreenActive = useCallback(async () => {
     if (wakeLock) {
       // Wake lock is already active, no need to request again
-      return
+      return;
     }
 
     try {
-      if ("wakeLock" in navigator) {
-        const lock = await navigator.wakeLock.request("screen")
-        setWakeLock(lock)
-        setIsScreenActiveEnabled(true)
-        setError(null)
-        console.log("Screen will stay active")
+      if ('wakeLock' in navigator) {
+        const lock = await navigator.wakeLock.request('screen');
+        setWakeLock(lock);
+        setIsScreenActiveEnabled(true);
+        setError(null);
+        console.log('Screen will stay active');
 
-        lock.addEventListener("release", () => {
-          console.log("Screen lock has been released")
-          setWakeLock(null)
-          setIsScreenActiveEnabled(false)
+        lock.addEventListener('release', () => {
+          console.log('Screen lock has been released');
+          setWakeLock(null);
+          setIsScreenActiveEnabled(false);
           // Try to re-acquire the wake lock
-          enableKeepScreenActive()
-        })
+          void enableKeepScreenActive();
+        });
       } else {
-        throw new Error("Wake Lock API is not supported in this browser")
+        throw new Error('Wake Lock API is not supported in this browser');
       }
     } catch (err) {
-      console.error(`Failed to keep screen active: ${err}`)
-      setError(`Kan het scherm niet actief houden: ${err}`)
-      setIsScreenActiveEnabled(false)
+      console.error(`Failed to keep screen active: ${err}`);
+      setError(`Kan het scherm niet actief houden: ${err}`);
+      setIsScreenActiveEnabled(false);
     }
-  }, [wakeLock])
+  }, [wakeLock]);
 
-  useEffect(() => {
-    enableKeepScreenActive()
+  useEffect((): (() => void) => {
+    void enableKeepScreenActive();
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        enableKeepScreenActive()
+    const handleVisibilityChange = (): void => {
+      if (document.visibilityState === 'visible') {
+        void enableKeepScreenActive();
       }
-    }
+    };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange)
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (wakeLock) {
-        wakeLock.release()
+        void wakeLock.release();
       }
-    }
-  }, [enableKeepScreenActive, wakeLock])
+    };
+  }, [enableKeepScreenActive, wakeLock]);
 
-  return { isScreenActiveEnabled, error }
+  return { isScreenActiveEnabled, error };
 }
-
