@@ -326,7 +326,7 @@ const App: React.FC = () => {
 
             if (event.results[last].isFinal) {
               setIsSpeaking(false)
-              if (text.toLowerCase() === "poedel") {
+              if (text.toLowerCase().includes("poedel")) {
                 addTurn(0)
               } else if (keywordMatches(text)) {
                 const pointsText = text.replace(/^(beurt|bird|burt|bert|plus|score|\+|streak|reeks)/i, "").trim()
