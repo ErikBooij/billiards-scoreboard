@@ -1,33 +1,33 @@
-import type React from "react"
-import { useState } from "react"
+import type React from 'react';
+import { useState } from 'react';
 
 interface Turn {
-  id: number
-  points: number
+  id: number;
+  points: number;
 }
 
 interface TurnListProps {
-  turns: Turn[]
-  onEditTurn: (id: number, newPoints: number) => void
-  onDeleteTurn: (id: number) => void
+  turns: Turn[];
+  onEditTurn: (id: number, newPoints: number) => void;
+  onDeleteTurn: (id: number) => void;
 }
 
 const TurnList: React.FC<TurnListProps> = ({ turns, onEditTurn, onDeleteTurn }) => {
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [editValue, setEditValue] = useState<string>("")
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState<string>('');
 
-  const handleEdit = (turn: Turn) => {
-    setEditingId(turn.id)
-    setEditValue(turn.points.toString())
-  }
+  const handleEdit = (turn: Turn): void => {
+    setEditingId(turn.id);
+    setEditValue(turn.points.toString());
+  };
 
-  const handleSave = (id: number) => {
-    const newPoints = Number.parseInt(editValue, 10)
+  const handleSave = (id: number): void => {
+    const newPoints = Number.parseInt(editValue, 10);
     if (!isNaN(newPoints)) {
-      onEditTurn(id, newPoints)
+      onEditTurn(id, newPoints);
     }
-    setEditingId(null)
-  }
+    setEditingId(null);
+  };
 
   return (
     <div className="mb-12 bg-white rounded-lg shadow-lg overflow-hidden">
@@ -43,7 +43,7 @@ const TurnList: React.FC<TurnListProps> = ({ turns, onEditTurn, onDeleteTurn }) 
           </thead>
           <tbody>
             {[...turns].reverse().map((turn, index) => (
-              <tr key={turn.id} className={index % 2 === 0 ? "bg-indigo-50" : "bg-white"}>
+              <tr key={turn.id} className={index % 2 === 0 ? 'bg-indigo-50' : 'bg-white'}>
                 <td className="p-3">{turns.length - index}</td>
                 <td className="p-3">
                   {editingId === turn.id ? (
@@ -86,8 +86,7 @@ const TurnList: React.FC<TurnListProps> = ({ turns, onEditTurn, onDeleteTurn }) 
         </table>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TurnList
-
+export default TurnList;

@@ -1,21 +1,21 @@
-import type React from "react"
-import { useState } from "react"
+import type React from 'react';
+import { useState } from 'react';
 
 interface ManualAddTurnProps {
-  onAddTurn: (points: number) => void
+  onAddTurn: (points: number) => void;
 }
 
 const ManualAddTurn: React.FC<ManualAddTurnProps> = ({ onAddTurn }) => {
-  const [points, setPoints] = useState("")
+  const [points, setPoints] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const numPoints = Number.parseInt(points, 10)
+  const handleSubmit = (e: React.FormEvent): void => {
+    e.preventDefault();
+    const numPoints = Number.parseInt(points, 10);
     if (!isNaN(numPoints)) {
-      onAddTurn(numPoints)
-      setPoints("")
+      onAddTurn(numPoints);
+      setPoints('');
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="mb-8 flex">
@@ -33,8 +33,7 @@ const ManualAddTurn: React.FC<ManualAddTurnProps> = ({ onAddTurn }) => {
         Beurt Toevoegen
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default ManualAddTurn
-
+export default ManualAddTurn;

@@ -1,7 +1,7 @@
-import type React from "react"
+import type React from 'react';
 
 interface NewGameButtonProps {
-  onNewGame: () => void
+  onNewGame: () => void;
 }
 
 const NewGameButton: React.FC<NewGameButtonProps> = ({ onNewGame }) => {
@@ -12,8 +12,7 @@ const NewGameButton: React.FC<NewGameButtonProps> = ({ onNewGame }) => {
     >
       Nieuw Spel Starten
     </button>
-  )
-}
+  );
+};
 
-export default NewGameButton
-
+export default NewGameButton;
