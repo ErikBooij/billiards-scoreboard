@@ -385,7 +385,25 @@ const App = (): React.ReactNode => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-5xl font-bold mb-12 text-center text-indigo-900">Biljart Scorebord</h1>
+      <h1 className="text-5xl font-bold mb-3 text-center text-indigo-900">Biljart Scorebord</h1>
+      <p className="text-center text-gray-500 mb-12 text-sm">
+        Naar een idee van{' '}
+        <a
+          href="https://www.jabohout.nl/"
+          target="_blank"
+          className="text-gray-600 hover:text-indigo-500 underline decoration-dotted"
+        >
+          Jan Booij
+        </a>
+        , uitvoering door{' '}
+        <a
+          href="https://www.linkedin.com/in/erik-booij"
+          target="_blank"
+          className="text-gray-600 hover:text-indigo-500 underline decoration-dotted"
+        >
+          Erik Booij
+        </a>
+      </p>
       <Instructions isVisible={showInstructions} onToggle={setShowInstructions} />
       <ScoreDisplay turns={turns} />
       <div className="my-8">
