@@ -149,10 +149,7 @@ const keywordMatches = (text: string): boolean => {
     'reeks',
     'poedel',
   ];
-  return (
-    keywords.some((keyword) => text.toLowerCase().startsWith(keyword)) ||
-    text.toLowerCase().trim() === 'poedel'
-  );
+  return keywords.some((keyword) => text.toLowerCase().includes(keyword));
 };
 
 const App = (): React.ReactNode => {
@@ -305,7 +302,7 @@ const App = (): React.ReactNode => {
       if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.continuous = true;
-        recognition.interimResults = true;
+        recognition.interimResults = false;
         recognition.lang = 'nl-NL';
         recognition.maxAlternatives = 5;
 
@@ -341,7 +338,7 @@ const App = (): React.ReactNode => {
                 addTurn(0);
               } else if (keywordMatches(text)) {
                 const pointsText = text
-                  .replace(/^(beurt|bird|burt|bert|plus|score|\+|streak|reeks)/i, '')
+                  .replace(/^.*(beurt|bird|burt|bert|plus|score|\+|streak|reeks)/i, '')
                   .trim();
                 const points = parseSpokenNumber(improveNumberRecognition(pointsText));
                 if (points !== null) {
