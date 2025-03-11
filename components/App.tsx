@@ -149,10 +149,7 @@ const keywordMatches = (text: string): boolean => {
     'reeks',
     'poedel',
   ];
-  return (
-    keywords.some((keyword) => text.toLowerCase().startsWith(keyword)) ||
-    text.toLowerCase().trim() === 'poedel'
-  );
+  return keywords.some((keyword) => text.toLowerCase().includes(keyword));
 };
 
 const App = (): React.ReactNode => {
@@ -221,20 +218,14 @@ const App = (): React.ReactNode => {
     localStorage.setItem('billiards_turns', JSON.stringify(turns));
   }, [turns]);
 
-  const speakSummary = useCallback((totalPoints: number, totalTurns: number, average: number) => {
+  const speakSummary = useCallback((totalPoints: number, totalTurns: number) => {
     console.log('speakSummary called, speakStats:', speakStatsRef.current);
     if ('speechSynthesis' in window && speakStatsRef.current) {
       const utterance = new SpeechSynthesisUtterance();
       const pointText = totalPoints === 1 ? 'punt' : 'punten';
       const turnText = totalTurns === 1 ? 'beurt' : 'beurten';
-      let averageText: string;
-      if (average % 1 === 0) {
-        averageText = Math.floor(average).toString();
-      } else {
-        const [wholePart, decimalPart] = average.toFixed(1).split('.');
-        averageText = `${wholePart} komma ${decimalPart}`;
-      }
-      utterance.text = `${totalPoints} ${pointText} uit ${totalTurns} ${turnText}, gemiddeld ${averageText}.`;
+
+      utterance.text = `${totalPoints} ${pointText} uit ${totalTurns} ${turnText}.`;
       utterance.lang = 'nl-NL';
       utterance.rate = 1; // Normal speaking speed
 
@@ -258,7 +249,6 @@ const App = (): React.ReactNode => {
         const newTurns = [...prevTurns, { id: Date.now(), points }];
         const totalPoints = newTurns.reduce((sum, turn) => sum + turn.points, 0);
         const totalTurns = newTurns.length;
-        const average = totalPoints / totalTurns;
 
         if (playBeepRef.current) {
           playSound();
@@ -267,7 +257,7 @@ const App = (): React.ReactNode => {
         if (speakStatsRef.current) {
           setTimeout(
             () => {
-              speakSummary(totalPoints, totalTurns, average);
+              speakSummary(totalPoints, totalTurns);
             },
             playBeepRef.current ? 500 : 0,
           );
@@ -312,7 +302,7 @@ const App = (): React.ReactNode => {
       if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.continuous = true;
-        recognition.interimResults = true;
+        recognition.interimResults = false;
         recognition.lang = 'nl-NL';
         recognition.maxAlternatives = 5;
 
@@ -348,7 +338,7 @@ const App = (): React.ReactNode => {
                 addTurn(0);
               } else if (keywordMatches(text)) {
                 const pointsText = text
-                  .replace(/^(beurt|bird|burt|bert|plus|score|\+|streak|reeks)/i, '')
+                  .replace(/^.*(beurt|bird|burt|bert|plus|score|\+|streak|reeks)/i, '')
                   .trim();
                 const points = parseSpokenNumber(improveNumberRecognition(pointsText));
                 if (points !== null) {
